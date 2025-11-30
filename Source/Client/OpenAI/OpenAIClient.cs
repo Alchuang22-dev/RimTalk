@@ -65,6 +65,12 @@ public class OpenAIClient : IAIClient
             Content = m.message
         }));
 
+        // NOTE:
+        // - instruction 已含 Constant.Instruction，其末尾强制要求模型输出 JSONL/NDJSON，
+        //   每行形如：{"name": "...", "text": "...", "emotion": { "score": 87, "label": "praise_target" }}
+        // - 这里不额外设置 response_format，避免与 JSONL 协议冲突。
+        // - 内容由 OpenAIStreamHandler 按 content 块拼接后交给 JsonStreamParser<T>，
+        //   其中 T 在 RimTalk 主流程中一般为 TalkResponse 或 TalkResponse[]。
         var request = new OpenAIRequest
         {
             Model = _model,

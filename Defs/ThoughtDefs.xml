@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!--=================== RimTalk: non-social mood from AI talk ===================-->
+
+  <!-- 抽象基类：普通记忆型思绪 -->
+  <ThoughtDef Abstract="True" Name="RimTalkThoughtBase">
+    <validWhileDespawned>true</validWhileDespawned>
+    <durationDays>0.5</durationDays> <!-- 持续约半天，可按需要调整 -->
+    <stackLimit>1</stackLimit>
+    <stackedEffectMultiplier>0.75</stackedEffectMultiplier>
+    <thoughtClass>Thought_Memory</thoughtClass>
+
+    <nullifyingTraits>
+      <li>Psychopath</li>
+    </nullifyingTraits>
+    <nullifyingHediffs>
+      <li MayRequire="Ludeon.RimWorld.Anomaly">Inhumanized</li>
+    </nullifyingHediffs>
+  </ThoughtDef>
+
+  <!-- 正向：被夸奖 / 被肯定 -->
+  <ThoughtDef ParentName="RimTalkThoughtBase">
+    <defName>RimTalk_Praised</defName>
+    <stages>
+      <li>
+        <label>was praised in a conversation</label>
+        <description>
+          Someone's words made me feel seen and appreciated.
+        </description>
+        <baseMoodEffect>6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 中性：愉快的交谈 -->
+  <ThoughtDef ParentName="RimTalkThoughtBase">
+    <defName>RimTalk_Chatted</defName>
+    <stages>
+      <li>
+        <label>had a nice talk</label>
+        <description>
+          It felt good to talk and share some thoughts.
+        </description>
+        <baseMoodEffect>2</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+  <!-- 负向：被言语伤害 -->
+  <ThoughtDef ParentName="RimTalkThoughtBase">
+    <defName>RimTalk_Insulted</defName>
+    <stages>
+      <li>
+        <label>was hurt by someone's words</label>
+        <description>
+          Those words were harsh and hard to forget.
+        </description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+
+</Defs>

@@ -228,7 +228,7 @@ public static class TalkService
         PawnState pawnState = Cache.Get(pawn);
         if (pawnState == null) return null;
 
-        TalkResponse talkResponse = ConsumeTalk(pawnState);
+        TalkResponse talkResponse = ConsumeTalk(pawn, pawnState);
         pawnState.LastTalkTick = GenTicks.TicksGame;
 
         return talkResponse.Text;
@@ -236,21 +236,28 @@ public static class TalkService
 
     /// <summary>
     /// Dequeues a talk and updates its history as either spoken or ignored.
+    /// 在这里插入根据情绪施加 Thought 的逻辑。
     /// </summary>
-    private static TalkResponse ConsumeTalk(PawnState pawnState)
+    private static TalkResponse ConsumeTalk(Pawn pawn, PawnState pawnState)
     {
         // Failsafe check
-        if (pawnState.TalkResponses.Empty()) 
+        if (pawnState.TalkResponses.Empty())
             return new TalkResponse(TalkType.Other, null, "");
-        
+
         var talkResponse = pawnState.TalkResponses.First();
         pawnState.TalkResponses.Remove(talkResponse);
         TalkHistory.AddSpoken(talkResponse.Id);
+
         var apiLog = ApiHistory.GetApiLog(talkResponse.Id);
         if (apiLog != null)
             apiLog.SpokenTick = GenTicks.TicksGame;
 
         Overlay.NotifyLogUpdated();
+
+            // === RimTalk: 根据这句对话的情绪结果施加非社交心情 Thought ===
+            // 如果 Emotion 为空，RimTalkThoughtUtility 会自动安全地忽略。
+        RimTalkThoughtUtility.ApplyNonSocialMoodFromTalk(pawn, talkResponse);
+
         return talkResponse;
     }
 

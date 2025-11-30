@@ -32,7 +32,19 @@ Monologue = 1 turn. Conversation = 4-8 short turns";
 
     private const string JsonInstruction = @"
 
-Return JSONL/NDJSON only, with objects containing ""name"" and ""text"" string keys";
+Return JSONL/NDJSON only.
+Each line MUST be a single JSON object with string keys ""name"" and ""text"",
+and an optional ""emotion"" object, for example:
+{""name"":""gpt1"",""text"":""...dialogue line..."",""emotion"":{""score"":87,""label"":""praise_target""}}
+
+- ""score"" is an integer from 1 to 100 (1-30 strongly negative, 31-69 neutral/mixed, 70-100 clearly positive).
+- ""label"" is a short lowercase string, preferably one of:
+  - ""praise_target"" (clearly praising or encouraging the other pawn)
+  - ""insult_target"" (clearly insulting or hurting the other pawn)
+  - ""neutral_chitchat"" (casual talk without strong emotion)
+  - ""other"" (none of the above)
+
+Do NOT output any non-JSON text before or after the JSON objects.";
 
     // Get the current instruction from settings or fallback to default, always append JSON instruction
     public static string Instruction =>
